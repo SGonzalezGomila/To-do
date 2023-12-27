@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>ToDo List</title>
+</head>
+<body>
+    <div id="login-container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" required>
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+
+    <div id="todo-container" class="hidden">
+        <h2>ToDo List</h2>
+        <div id="add-task-container">
+            <input type="text" id="task-input" placeholder="Add a new task">
+            <input type="number" id="time-input" placeholder="Estimated time (min)">
+            <button onclick="addTask()">Add Task</button>
+        </div>
+
+        <div id="tasks">
+            <h3>Tasks</h3>
+            <ul id="task-list"></ul>
+        </div>
+
+        <div id="completed-tasks">
+            <h3>Completed Tasks</h3>
+            <ul id="completed-task-list"></ul>
+        </div>
+
+        <div id="total-time">
+            <p>Total Estimated Time: <span id="total-time-value">0</span> min</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
