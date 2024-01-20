@@ -3,25 +3,32 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function checkLoginStatus() {
-    
     const isLoggedIn = localStorage.getItem("isLoggedIn");
 
     if (isLoggedIn) {
         showToDoContainer();
-        loadTasksFromLocalStorage();
+        loadTasksFromServer()
+            .then(tasks => {
+                loadTasksToList(tasks);
+                updateTotalTime();
+            })
+            .catch(error => console.error("Error loading tasks:", error));
     }
 }
 
 function login() {
-    
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    
     if (username && password) {
         localStorage.setItem("isLoggedIn", true);
         showToDoContainer();
-        loadTasksFromLocalStorage();
+        loadTasksFromServer()
+            .then(tasks => {
+                loadTasksToList(tasks);
+                updateTotalTime();
+            })
+            .catch(error => console.error("Error loading tasks:", error));
     }
 }
 
@@ -41,9 +48,12 @@ function addTask() {
         const taskObject = { task, time };
         addTaskToList(taskObject);
         updateTotalTime();
-        saveTasksToLocalStorage();
-        taskInput.value = "";
-        timeInput.value = "";
+        saveTasksToServer()
+            .then(() => {
+                taskInput.value = "";
+                timeInput.value = "";
+            })
+            .catch(error => console.error("Error saving tasks:", error));
     }
 }
 
@@ -72,7 +82,8 @@ function completeTask(button) {
     completedTaskList.appendChild(taskItem);
 
     updateTotalTime();
-    saveTasksToLocalStorage();
+    saveTasksToServer()
+        .catch(error => console.error("Error saving tasks:", error));
 }
 
 function deleteTask(button) {
@@ -87,7 +98,8 @@ function deleteTask(button) {
     }
 
     updateTotalTime();
-    saveTasksToLocalStorage();
+    saveTasksToServer()
+        .catch(error => console.error("Error saving tasks:", error));
 }
 
 function updateTotalTime() {
@@ -103,7 +115,7 @@ function updateTotalTime() {
     totalTimeValue.textContent = totalTime;
 }
 
-function saveTasksToLocalStorage() {
+function saveTasksToServer() {
     const taskItems = document.querySelectorAll("#task-list li");
     const completedTaskItems = document.querySelectorAll("#completed-task-list li");
 
@@ -122,16 +134,22 @@ function saveTasksToLocalStorage() {
         completedTasks.push({ task, time });
     });
 
-    localStorage.setItem("tasks", JSON.stringify(tasks));
-    localStorage.setItem("completedTasks", JSON.stringify(completedTasks));
+    const data = { tasks, completedTasks };
+
+    return fetch('tareas.json', {
+        method: 'PUT', // Puedes ajustar el método según tus necesidades (GET, POST, PUT, etc.)
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+    });
 }
 
-function loadTasksFromLocalStorage() {
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const completedTasks = JSON.parse(localStorage.getItem("completedTasks")) || [];
-
-    tasks.forEach(task => addTaskToList(task));
-    completedTasks.forEach(task => addTaskToList(task));  
-
-    updateTotalTime();
-}
+function loadTasksFromServer() {
+    return fetch('tareas.json') // Cambia 'tareas.json' por la ruta correct
+    }
