@@ -1,0 +1,15 @@
+{
+    "completedTasks": [
+      {
+        "id": 1,
+        "task": "Complete task 1",
+        "time": 30
+      },
+      {
+        "id": 2,
+        "task": "Finish task 2",
+        "time": 45
+      }
+      
+    ]
+  }
