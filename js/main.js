@@ -86,21 +86,51 @@ function completeTask(button) {
         .catch(error => console.error("Error saving tasks:", error));
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    checkLoginStatus();
+});
+
+
+
 function deleteTask(button) {
-    const taskItem = button.parentElement;
-    const taskList = document.getElementById("task-list");
-    const completedTaskList = document.getElementById("completed-task-list");
+    
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción eliminará la tarea. ¿Quieres continuar?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+            const taskItem = button.parentElement;
+            const taskList = document.getElementById("task-list");
+            const completedTaskList = document.getElementById("completed-task-list");
 
-    if (taskItem.classList.contains("completed")) {
-        completedTaskList.removeChild(taskItem);
-    } else {
-        taskList.removeChild(taskItem);
-    }
+            if (taskItem.classList.contains("completed")) {
+                completedTaskList.removeChild(taskItem);
+            } else {
+                taskList.removeChild(taskItem);
+            }
 
-    updateTotalTime();
-    saveTasksToServer()
-        .catch(error => console.error("Error saving tasks:", error));
+            updateTotalTime();
+            saveTasksToServer()
+                .catch(error => console.error("Error saving tasks:", error));
+            
+            Swal.fire(
+                'Eliminado',
+                'La tarea ha sido eliminada correctamente.',
+                'success'
+            );
+        }
+    });
 }
+
+
+
 
 function updateTotalTime() {
     const totalTimeValue = document.getElementById("total-time-value");
@@ -137,7 +167,7 @@ function saveTasksToServer() {
     const data = { tasks, completedTasks };
 
     return fetch('tareas.json', {
-        method: 'PUT', // Puedes ajustar el método según tus necesidades (GET, POST, PUT, etc.)
+        method: 'PUT', 
         headers: {
             'Content-Type': 'application/json'
         },
@@ -151,5 +181,5 @@ function saveTasksToServer() {
 }
 
 function loadTasksFromServer() {
-    return fetch('tareas.json') // Cambia 'tareas.json' por la ruta correct
+    return fetch('tareas.json') 
     }
